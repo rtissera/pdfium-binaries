@@ -50,6 +50,9 @@ jobs:
         environment:
           - ''
           - musl
+        exclude:
+          - cpu: riscv64
+            environment: musl
     steps:
       - name: Checkout
         uses: actions/checkout@v4
