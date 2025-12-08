@@ -53,6 +53,8 @@ jobs:
         exclude:
           - cpu: riscv64
             environment: musl
+          - cpu: x64
+            environment: musl
     steps:
       - name: Checkout
         uses: actions/checkout@v4

@@ -20,11 +20,6 @@ on:
         type: boolean
         required: false
         default: false
-      nuget:
-        description: Publish on nuget.org
-        type: boolean
-        required: false
-        default: false
       is_debug:
         description: Is debug build
         type: boolean
@@ -84,17 +79,6 @@ jobs:
       is_debug: ${{ github.event.inputs.is_debug == 'true' }}
       target_cpu: x64
 
-  linux_x64_musl:
-    name: Linux x64 (musl)
-    uses: ./.github/workflows/build.yml
-    secrets: inherit
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_cpu: x64
-      target_environment: musl
-
   linux_riscv64:
     name: Linux riscv64 (glibc)
     uses: ./.github/workflows/build.yml
@@ -105,74 +89,12 @@ jobs:
       is_debug: ${{ github.event.inputs.is_debug == 'true' }}
       target_cpu: riscv64
 
-  nuget:
-    name: Build NuGet package
-    if: github.event.inputs.nuget == 'true'
-    runs-on: ubuntu-latest
-    needs:
-      - linux_arm
-      - linux_arm_musl
-      - linux_arm64
-      - linux_arm64_musl
-      - linux_x64
-      - linux_x64_musl
-      - linux_riscv64
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: nuget
-      - name: Install NuGet CLI
-        shell: bash
-        run: |
-          dotnet tool install --global NuGet.CommandLine
-          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
-      - name: Prepare header files
-        run: |
-          mkdir -p nuget/include/pdfium
-          cp -r nuget/pdfium-linux-x64/include/* nuget/include/pdfium/
-        shell: bash
-      - name: Define properties
-        shell: bash
-        run: |
-          VERSION="$VERSION"
-          BRANCH="${GITHUB_REF#refs/heads/}"
-          COMMIT="${GITHUB_SHA}"
-          RELEASE_NOTES="${{github.server_url}}/${{github.repository}}/releases"
-          $RELEASE && RELEASE_NOTES+="/tag/$BRANCH"
-          echo "NUSPEC_PROPERTIES=version=$VERSION;branch=$BRANCH;commit=$COMMIT;releaseNotes=$RELEASE_NOTES" >> "$GITHUB_ENV"
-        env:
-          VERSION: ${{ github.event.inputs.version || '0.0.0.0' }}
-          RELEASE: ${{ github.event.inputs.release }}
-          BRANCH: ${{ github.event.inputs.branch }}
-      - name: Pack
-        shell: bash
-        run: |
-          NUSPEC=nuget/bblanchon.PDFium.Linux.nuspec
-          echo "::group::$NUSPEC"
-          nuget pack "$NUSPEC" -p "$NUSPEC_PROPERTIES"
-          echo "::endgroup::"
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: NuGet packages
-          path: '*.nupkg'
-      - name: Push to nuget.org
-        if: env.NUGET_API_KEY && startsWith(github.event.inputs.branch, 'chromium/') && github.event.inputs.version && github.event.inputs.nuget == 'true'
-        run: nuget push -Source nuget.org -ApiKey ${{ secrets.NUGET_API_KEY }} *.nupkg
-        env:
-          NUGET_API_KEY: ${{ secrets.NUGET_API_KEY  }}
-    env:
-      RELEASE: ${{ github.event.inputs.release }}
-
   publish:
     name: Publish Release
     outputs:
       hashes: ${{ steps.hash.outputs.hashes }}
       tagname: ${{ github.event.inputs.branch }}
-    if: startsWith(github.event.inputs.branch, 'chromium/') && github.event.inputs.version && github.event.inputs.release == 'true'
+    if: github.event.inputs.version && github.event.inputs.release == 'true'
     runs-on: ubuntu-latest
     needs:
       - linux_arm
@@ -180,7 +102,6 @@ jobs:
       - linux_arm64
       - linux_arm64_musl
       - linux_x64
-      - linux_x64_musl
       - linux_riscv64
     permissions:
       contents: write
