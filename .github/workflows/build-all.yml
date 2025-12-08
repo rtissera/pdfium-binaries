@@ -116,6 +116,7 @@ jobs:
             echo "::group::$DIR"
             (cd $DIR && tar czf ../$DIR.tgz *)
             echo "::endgroup::"
+          done
         shell: bash
       - name: Write release body
         run: echo "This version was built with branch `$BRANCH` of PDFium" > RELEASE.md
