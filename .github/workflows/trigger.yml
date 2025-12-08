@@ -32,6 +32,5 @@ jobs:
             "branch": "${{ steps.chromium.outputs.branch }}",
             "version": "${{ steps.chromium.outputs.version }}",
             "is_debug": "false",
-            "release": "true",
-            "nuget": "true"
+            "release": "true"
           }
