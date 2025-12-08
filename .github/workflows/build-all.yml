@@ -2,7 +2,7 @@ name: Build all
 
 permissions:
   contents: read
-  actions: write # to upload artifacts
+  actions: write
 
 on:
   workflow_dispatch:
@@ -15,16 +15,6 @@ on:
         description: PDFium version
         required: false
         default: ""
-      enable_v8:
-        description: Enable V8
-        type: boolean
-        required: false
-        default: false
-      is_debug:
-        description: Is debug
-        type: boolean
-        required: false
-        default: false
       release:
         description: Publish GitHub release
         type: boolean
@@ -35,576 +25,110 @@ on:
         type: boolean
         required: false
         default: false
-      anaconda:
-        description: Publish on anaconda.org
+      is_debug:
+        description: Is debug build
         type: boolean
         required: false
         default: false
 
 jobs:
-  android_arm:
-    name: Android ARM
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: android
-      target_cpu: arm
-      enable_v8: false
-
-  android_arm_v8:
-    name: Android ARM V8
-    if: github.event.inputs.enable_v8 == 'true'
-    needs: android_arm
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: android
-      target_cpu: arm
-      enable_v8: true
-
-  android_arm64:
-    name: Android ARM64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: android
-      target_cpu: arm64
-      enable_v8: false
-
-  android_arm64_v8:
-    name: Android ARM64 V8
-    if: github.event.inputs.enable_v8 == 'true'
-    needs: android_arm64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: android
-      target_cpu: arm64
-      enable_v8: true
-
-  android_x64:
-    name: Android x64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: android
-      target_cpu: x64
-      enable_v8: false
-
-  android_x64_v8:
-    name: Android x64 V8
-    if: github.event.inputs.enable_v8 == 'true'
-    needs: android_x64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: android
-      target_cpu: x64
-      enable_v8: true
-
-  android_x86:
-    name: Android x86
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: android
-      target_cpu: x86
-      enable_v8: false
-
-  android_x86_v8:
-    name: Android x86 V8
-    if: github.event.inputs.enable_v8 == 'true'
-    needs: android_x86
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: android
-      target_cpu: x86
-      enable_v8: true
-
-  ios_catalyst_arm64:
-    name: iOS catalyst ARM64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: ios
-      target_cpu: arm64
-      target_environment: catalyst
-      enable_v8: false
-
-  ios_catalyst_arm64_v8:
-    name: iOS catalyst ARM64 V8
-    if: github.event.inputs.enable_v8 == 'true'
-    needs: ios_catalyst_arm64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: ios
-      target_cpu: arm64
-      target_environment: catalyst
-      enable_v8: true
-
-  ios_catalyst_x64:
-    name: iOS catalyst x64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: ios
-      target_cpu: x64
-      target_environment: catalyst
-      enable_v8: false
-
-  ios_catalyst_x64_v8:
-    name: iOS catalyst x64 V8
-    if: github.event.inputs.enable_v8 == 'true'
-    needs: ios_catalyst_x64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: ios
-      target_cpu: x64
-      target_environment: catalyst
-      enable_v8: true
-
-  ios_device_arm64:
-    name: iOS device ARM64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: ios
-      target_cpu: arm64
-      target_environment: device
-      enable_v8: false
-
-  ios_device_arm64_v8:
-    name: iOS device ARM64 V8
-    if: github.event.inputs.enable_v8 == 'true'
-    needs: ios_device_arm64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: ios
-      target_cpu: arm64
-      target_environment: device
-      enable_v8: true
-
-  ios_simulator_arm64:
-    name: iOS simulator ARM64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: ios
-      target_cpu: arm64
-      target_environment: simulator
-      enable_v8: false
-
-  ios_simulator_arm64_v8:
-    name: iOS simulator ARM64 V8
-    if: github.event.inputs.enable_v8 == 'true'
-    needs: ios_simulator_arm64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: ios
-      target_cpu: arm64
-      target_environment: simulator
-      enable_v8: true
-
-  ios_simulator_x64:
-    name: iOS simulator x64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: ios
-      target_cpu: x64
-      target_environment: simulator
-      enable_v8: false
-
-  ios_simulator_x64_v8:
-    name: iOS simulator x64 V8
-    if: github.event.inputs.enable_v8 == 'true'
-    needs: ios_simulator_x64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: ios
-      target_cpu: x64
-      target_environment: simulator
-      enable_v8: true
-
   linux_arm:
-    name: Linux ARM
+    name: Linux arm (glibc)
     uses: ./.github/workflows/build.yml
+    secrets: inherit
     with:
       branch: ${{ github.event.inputs.branch }}
       version: ${{ github.event.inputs.version }}
       is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: linux
       target_cpu: arm
-      enable_v8: false
 
-  linux_arm_v8:
-    name: Linux ARM V8
-    if: github.event.inputs.enable_v8 == 'true'
-    needs: linux_arm
+  linux_arm_musl:
+    name: Linux arm (musl)
     uses: ./.github/workflows/build.yml
+    secrets: inherit
     with:
       branch: ${{ github.event.inputs.branch }}
       version: ${{ github.event.inputs.version }}
       is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: linux
       target_cpu: arm
-      enable_v8: true
+      target_environment: musl
 
   linux_arm64:
-    name: Linux ARM64
+    name: Linux arm64 (glibc)
     uses: ./.github/workflows/build.yml
+    secrets: inherit
     with:
       branch: ${{ github.event.inputs.branch }}
       version: ${{ github.event.inputs.version }}
       is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: linux
       target_cpu: arm64
-      enable_v8: false
 
-  linux_arm64_v8:
-    name: Linux ARM64 V8
-    if: github.event.inputs.enable_v8 == 'true'
-    needs: linux_arm64
+  linux_arm64_musl:
+    name: Linux arm64 (musl)
     uses: ./.github/workflows/build.yml
+    secrets: inherit
     with:
       branch: ${{ github.event.inputs.branch }}
       version: ${{ github.event.inputs.version }}
       is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: linux
       target_cpu: arm64
-      enable_v8: true
-
-  linux_ppc64:
-    name: Linux ppc64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: linux
-      target_cpu: ppc64
-      enable_v8: false
+      target_environment: musl
 
   linux_x64:
-    name: Linux x64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: linux
-      target_cpu: x64
-      enable_v8: false
-
-  linux_x64_v8:
-    name: Linux x64 V8
-    if: github.event.inputs.enable_v8 == 'true'
-    needs: linux_x64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: linux
-      target_cpu: x64
-      enable_v8: true
-
-  linux_x86:
-    name: Linux x86
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: linux
-      target_cpu: x86
-      enable_v8: false
-
-  linux_x86_v8:
-    name: Linux x86 V8
-    if: github.event.inputs.enable_v8 == 'true'
-    needs: linux_x86
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: linux
-      target_cpu: x86
-      enable_v8: true
-
-  linux_musl_arm64:
-    name: Linux musl ARM64
+    name: Linux x64 (glibc)
     uses: ./.github/workflows/build.yml
     secrets: inherit
     with:
       branch: ${{ github.event.inputs.branch }}
       version: ${{ github.event.inputs.version }}
       is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: linux
-      target_cpu: arm64
-      target_environment: musl
-      enable_v8: false
+      target_cpu: x64
 
-  linux_musl_x64:
-    name: Linux musl x64
+  linux_x64_musl:
+    name: Linux x64 (musl)
     uses: ./.github/workflows/build.yml
     secrets: inherit
     with:
       branch: ${{ github.event.inputs.branch }}
       version: ${{ github.event.inputs.version }}
       is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: linux
       target_cpu: x64
       target_environment: musl
-      enable_v8: false
 
-  linux_musl_x86:
-    name: Linux musl x86
+  linux_riscv64:
+    name: Linux riscv64 (glibc)
     uses: ./.github/workflows/build.yml
     secrets: inherit
     with:
       branch: ${{ github.event.inputs.branch }}
       version: ${{ github.event.inputs.version }}
       is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: linux
-      target_cpu: x86
+      target_cpu: riscv64
+
+  linux_riscv64_musl:
+    name: Linux riscv64 (musl)
+    uses: ./.github/workflows/build.yml
+    secrets: inherit
+    with:
+      branch: ${{ github.event.inputs.branch }}
+      version: ${{ github.event.inputs.version }}
+      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
+      target_cpu: riscv64
       target_environment: musl
-      enable_v8: false
-
-  mac_arm64:
-    name: macOS ARM64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: mac
-      target_cpu: arm64
-      enable_v8: false
-
-  mac_arm64_v8:
-    name: macOS ARM64 V8
-    if: github.event.inputs.enable_v8 == 'true'
-    needs: mac_arm64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: mac
-      target_cpu: arm64
-      enable_v8: true
-
-  mac_x64:
-    name: macOS x64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: mac
-      target_cpu: x64
-      enable_v8: false
-
-  mac_x64_v8:
-    name: macOS x64 V8
-    if: github.event.inputs.enable_v8 == 'true'
-    needs: mac_x64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: mac
-      target_cpu: x64
-      enable_v8: true
-
-  win_arm64:
-    name: Windows ARM64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: win
-      target_cpu: arm64
-      enable_v8: false
-
-  win_arm64_v8:
-    name: Windows ARM64 V8
-    if: github.event.inputs.enable_v8 == 'true'
-    needs: win_arm64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: win
-      target_cpu: arm64
-      enable_v8: true
-
-  win_x64:
-    name: Windows x64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: win
-      target_cpu: x64
-      enable_v8: false
-
-  win_x64_v8:
-    name: Windows x64 V8
-    if: github.event.inputs.enable_v8 == 'true'
-    needs: win_x64
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: win
-      target_cpu: x64
-      enable_v8: true
-
-  win_x86:
-    name: Windows x86
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: win
-      target_cpu: x86
-      enable_v8: false
-
-  win_x86_v8:
-    name: Windows x86 V8
-    if: github.event.inputs.enable_v8 == 'true'
-    needs: win_x86
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: win
-      target_cpu: x86
-      enable_v8: true
-
-  wasm:
-    name: WASM
-    uses: ./.github/workflows/build.yml
-    with:
-      branch: ${{ github.event.inputs.branch }}
-      version: ${{ github.event.inputs.version }}
-      is_debug: ${{ github.event.inputs.is_debug == 'true' }}
-      target_os: emscripten
-      target_cpu: wasm
-      enable_v8: false
-
-  mac_univ:
-    name: macOS univ
-    needs:
-      - mac_arm64
-      - mac_x64
-    uses: ./.github/workflows/mac-univ.yml
-    with:
-      artifact_x64: ${{ needs.mac_x64.outputs.artifact }}
-      artifact_arm64: ${{ needs.mac_arm64.outputs.artifact }}
-
-  mac_univ_v8:
-    name: macOS univ V8
-    needs:
-      - mac_arm64_v8
-      - mac_x64_v8
-    uses: ./.github/workflows/mac-univ.yml
-    with:
-      artifact_x64: ${{ needs.mac_x64_v8.outputs.artifact }}
-      artifact_arm64: ${{ needs.mac_arm64_v8.outputs.artifact }}
 
   nuget:
-    name: Build NuGet packages
-    runs-on: windows-latest
+    name: Build NuGet package
+    if: github.event.inputs.nuget == 'true'
+    runs-on: ubuntu-latest
     needs:
-      - android_arm
-      - android_arm_v8
-      - android_arm64
-      - android_arm64_v8
-      - android_x64
-      - android_x64_v8
-      - android_x86
-      - android_x86_v8
-      - ios_device_arm64
-      - ios_device_arm64_v8
-      - ios_simulator_arm64
-      - ios_simulator_arm64_v8
-      - ios_simulator_x64
-      - ios_simulator_x64_v8
       - linux_arm
-      - linux_arm_v8
+      - linux_arm_musl
       - linux_arm64
-      - linux_arm64_v8
+      - linux_arm64_musl
       - linux_x64
-      - linux_x64_v8
-      - linux_x86
-      - linux_x86_v8
-      - linux_musl_arm64
-      - linux_musl_x64
-      - linux_musl_x86
-      - mac_arm64
-      - mac_arm64_v8
-      - mac_x64
-      - mac_x64_v8
-      - wasm
-      - win_arm64
-      - win_arm64_v8
-      - win_x64
-      - win_x64_v8
-      - win_x86
-      - win_x86_v8
+      - linux_x64_musl
+      - linux_riscv64
+      - linux_riscv64_musl
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -612,9 +136,16 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: nuget
-      - name: Prepare header files
+      - name: Install NuGet CLI
         shell: bash
-        run: mkdir -p nuget/include/pdfium && cp -r nuget/pdfium-win-x86/include/* nuget/include/pdfium/
+        run: |
+          dotnet tool install --global NuGet.CommandLine
+          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+      - name: Prepare header files
+        run: |
+          mkdir -p nuget/include/pdfium
+          cp -r nuget/pdfium-linux-x64/include/* nuget/include/pdfium/
+        shell: bash
       - name: Define properties
         shell: bash
         run: |
@@ -631,11 +162,10 @@ jobs:
       - name: Pack
         shell: bash
         run: |
-          for NUSPEC in nuget/*.nuspec; do
-            echo "::group::$NUSPEC"
-            nuget pack "$NUSPEC" -p "$NUSPEC_PROPERTIES"
-            echo "::endgroup::"
-          done
+          NUSPEC=nuget/bblanchon.PDFium.Linux.nuspec
+          echo "::group::$NUSPEC"
+          nuget pack "$NUSPEC" -p "$NUSPEC_PROPERTIES"
+          echo "::endgroup::"
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
@@ -646,70 +176,8 @@ jobs:
         run: nuget push -Source nuget.org -ApiKey ${{ secrets.NUGET_API_KEY }} *.nupkg
         env:
           NUGET_API_KEY: ${{ secrets.NUGET_API_KEY  }}
-
-  conda:
-    name: Conda packages
-    if: github.event.inputs.version
-    runs-on: ubuntu-latest
-    needs:
-      - linux_arm64
-      - linux_x64
-      - mac_arm64
-      - mac_x64
-      - win_arm64
-      - win_x64
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-      - name: Create build script
-        run: |
-          cat >conda-build.sh <<END
-          #!/bin/bash -eux
-
-          PLATFORM=\$1
-          SOURCE_DIR=\$2
-          VERSION="$VERSION"
-
-          # rename "include/" into "include/pdfium/"
-          shopt -s extglob
-          mkdir -p \$SOURCE_DIR/include/pdfium
-          mv \$SOURCE_DIR/include/!(pdfium) \$SOURCE_DIR/include/pdfium
-
-          python conda/build.py pdfium-binaries \$PLATFORM \$VERSION --about-file conda/about.json --source-dir \$SOURCE_DIR --output-dir conda/out
-          END
-          chmod +x conda-build.sh
-        env:
-          VERSION: ${{ github.event.inputs.version }}
-      - name: Build for linux-64
-        run: ./conda-build.sh linux-64 pdfium-linux-x64
-      - name: Build for linux-aarch64
-        run: ./conda-build.sh linux-aarch64 pdfium-linux-arm64
-      - name: Build for osx-arm64
-        run: ./conda-build.sh osx-arm64 pdfium-mac-arm64
-      - name: Build for osx-64
-        run: ./conda-build.sh osx-64 pdfium-mac-x64
-      - name: Build for win-64
-        run: ./conda-build.sh win-64 pdfium-win-x64
-      - name: Build for win-arm64
-        run: ./conda-build.sh win-arm64 pdfium-win-arm64
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Conda packages
-          path: conda/out/
-      - name: Setup Miniconda
-        uses: conda-incubator/setup-miniconda@v3
-      - name: Install anaconda-client
-        run: conda install -yq anaconda-client
-        shell: bash -l {0}
-      - name: Upload to Anaconda
-        if: env.ANACONDA_API_TOKEN && startsWith(github.event.inputs.branch, 'chromium/') && github.event.inputs.version && github.event.inputs.anaconda == 'true'
-        run: find conda/out -name 'pdfium-binaries-*.tar.bz2' -exec anaconda upload --force {} +
-        shell: bash -l {0}
-        env:
-          ANACONDA_API_TOKEN: ${{ secrets.ANACONDA_API_TOKEN  }}
+    env:
+      RELEASE: ${{ github.event.inputs.release }}
 
   publish:
     name: Publish Release
@@ -719,47 +187,18 @@ jobs:
     if: startsWith(github.event.inputs.branch, 'chromium/') && github.event.inputs.version && github.event.inputs.release == 'true'
     runs-on: ubuntu-latest
     needs:
-      - android_arm
-      - android_arm_v8
-      - android_arm64
-      - android_arm64_v8
-      - android_x64
-      - android_x64_v8
-      - android_x86
-      - android_x86_v8
-      - ios_device_arm64
-      - ios_device_arm64_v8
-      - ios_simulator_x64
-      - ios_simulator_x64_v8
       - linux_arm
-      - linux_arm_v8
+      - linux_arm_musl
       - linux_arm64
-      - linux_arm64_v8
-      - linux_musl_arm64
-      - linux_musl_x64
-      - linux_musl_x86
-      - linux_ppc64
+      - linux_arm64_musl
       - linux_x64
-      - linux_x64_v8
-      - linux_x86
-      - linux_x86_v8
-      - mac_arm64
-      - mac_arm64_v8
-      - mac_univ
-      - mac_univ_v8
-      - mac_x64
-      - mac_x64_v8
-      - wasm
-      - win_arm64
-      - win_arm64_v8
-      - win_x64
-      - win_x64_v8
-      - win_x86
-      - win_x86_v8
+      - linux_x64_musl
+      - linux_riscv64
+      - linux_riscv64_musl
     permissions:
-      contents: write # to create releases
-      id-token: write # to attest build provenance
-      attestations: write # to attest build provenance
+      contents: write
+      id-token: write
+      attestations: write
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v4
@@ -767,9 +206,9 @@ jobs:
         run: |
           for DIR in pdfium-*; do
             echo "::group::$DIR"
-            (cd $DIR; tar czf ../$DIR.tgz *)
+            (cd $DIR && tar czf ../$DIR.tgz *)
             echo "::endgroup::"
-          done
+        shell: bash
       - name: Write release body
         run: echo "This version was built with branch `$BRANCH` of PDFium" > RELEASE.md
         env:

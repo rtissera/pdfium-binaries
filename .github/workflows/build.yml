@@ -13,34 +13,20 @@ on:
         type: string
         required: false
         default: ""
-      enable_v8:
-        description: Enable V8
-        type: boolean
-        required: false
-        default: false
       is_debug:
         description: Is debug
         type: boolean
         required: false
         default: false
-      target_os:
-        description: Target OS (android|emscripten|ios|linux|mac|win)
-        type: string
-        required: true
       target_cpu:
-        description: Target (CPU arm|arm64|ppc64|x64|x86|wasm)
+        description: Target CPU (arm|arm64|x64|riscv64)
         type: string
         required: true
       target_environment:
-        description: Target environment (device|catalyst|musl|simulator)
+        description: Target environment (musl)
         type: string
         required: false
         default: ''
-      emsdk_version:
-        description: Emscripten SDK
-        type: string
-        required: false
-        default: 3.1.72
     outputs:
       artifact:
         description: "The name of the artifact"
@@ -54,25 +40,21 @@ jobs:
   build:
     outputs:
       artifact: ${{ steps.init.outputs.artifact }}
-    runs-on: ${{ (inputs.target_os == 'ios' || inputs.target_os == 'mac') && 'macos-15' || inputs.target_os == 'win' && 'windows-2022' || 'ubuntu-24.04' }}
+    runs-on: ubuntu-24.04
     env:
       PDFium_BRANCH: ${{ inputs.branch }}
       PDFium_IS_DEBUG: ${{ inputs.is_debug }}
       PDFium_TARGET_CPU: ${{ inputs.target_cpu }}
-      PDFium_TARGET_OS: ${{ inputs.target_os }}
+      PDFium_TARGET_OS: linux
       PDFium_TARGET_ENVIRONMENT: ${{ inputs.target_environment }}
-      PDFium_ENABLE_V8: ${{ inputs.enable_v8 }}
       PDFium_VERSION: ${{ inputs.version }}
-      EMSDK_VERSION: ${{ inputs.emsdk_version }}
       MUSL_URL: ${{ secrets.MUSL_URL }}
     steps:
       - name: Initialize
         id: init
         shell: bash
         run: |
-          ARTIFACT="pdfium"
-          [ "$PDFium_ENABLE_V8" == "true" ] && ARTIFACT="$ARTIFACT-v8"
-          [ "$PDFium_TARGET_OS" != "emscripten" ] && ARTIFACT="$ARTIFACT-$PDFium_TARGET_OS"
+          ARTIFACT="pdfium-linux"
           [ "$PDFium_TARGET_ENVIRONMENT" != "" ] && ARTIFACT="$ARTIFACT-$PDFium_TARGET_ENVIRONMENT"
           ARTIFACT="$ARTIFACT-$PDFium_TARGET_CPU"
           [ "${{inputs.is_debug}}" == "true" ] && ARTIFACT="$ARTIFACT-debug"

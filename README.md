@@ -8,7 +8,6 @@
 [![Total downloads](https://img.shields.io/github/downloads/bblanchon/pdfium-binaries/total)](https://github.com/bblanchon/pdfium-binaries/releases/)
 
 [![Latest release](https://img.shields.io/github/v/release/bblanchon/pdfium-binaries?display_name=release&label=github)](https://github.com/bblanchon/pdfium-binaries/releases/latest/)
-[![Nuget](https://img.shields.io/nuget/v/bblanchon.PDFium)](https://www.nuget.org/packages/bblanchon.PDFium/)
 [![Conda](https://img.shields.io/conda/v/bblanchon/pdfium-binaries?label=conda)](https://anaconda.org/bblanchon/pdfium-binaries)
 
 
@@ -30,15 +29,6 @@ Current CPU targets: `arm`, `arm64`, `x64`, and `riscv64` (RV64GC). V8-enabled b
 See the [Releases page](https://github.com/bblanchon/pdfium-binaries/releases) for the latest tarballs.
 
 Musl builds ship with Abseil stack tracing disabled (`PDFIUM_USE_MUSL=1`) because musl does not export `execinfo`/`backtrace`; we fall back to a stub so the library still links but without unwinder support.
-
-### NuGet Packages
-
-Only the Linux package is maintained at this time:
-
-- [`bblanchon.PDFium.Linux`](https://www.nuget.org/packages/bblanchon.PDFium.Linux/): ships the glibc/musl binaries produced by this repo. V8 variants are no longer published.
-
-**HELP WANTED!**  
-I can provide packages for your favorite package manager, but I need help from someone who knows the format. Contact me via [GitHub issues](https://github.com/bblanchon/pdfium-binaries/issues) if you want to help.
 
 ## Documentation
 
