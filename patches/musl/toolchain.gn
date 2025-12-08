@@ -12,6 +12,7 @@ gcc_toolchain("x86") {
   ld = cxx
 
   extra_ldflags = "-static-libgcc -static-libstdc++"
+  extra_cppflags = "-DPDFIUM_USE_MUSL=1"
 
   toolchain_args = {
     current_cpu = "x86"
@@ -34,6 +35,7 @@ gcc_toolchain("x64") {
   ld = cxx
 
   extra_ldflags = "-static-libgcc -static-libstdc++"
+  extra_cppflags = "-DPDFIUM_USE_MUSL=1"
 
   toolchain_args = {
     current_cpu = "x64"
@@ -56,6 +58,7 @@ gcc_toolchain("arm") {
   ld = cxx
 
   extra_ldflags = "-static-libgcc -static-libstdc++"
+  extra_cppflags = "-DPDFIUM_USE_MUSL=1"
 
   toolchain_args = {
     current_cpu = "arm"
@@ -79,6 +82,7 @@ gcc_toolchain("arm64") {
 
   extra_cxxflags= "-flax-vector-conversions"  # issue #150
   extra_ldflags = "-static-libgcc -static-libstdc++"
+  extra_cppflags = "-DPDFIUM_USE_MUSL=1"
 
   toolchain_args = {
     current_cpu = "arm64"

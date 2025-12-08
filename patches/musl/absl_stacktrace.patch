@@ -1,0 +1,23 @@
+diff --git a/third_party/abseil-cpp/absl/debugging/internal/stacktrace_config.h b/third_party/abseil-cpp/absl/debugging/internal/stacktrace_config.h
+index c82d4a3..ced7230 100644
+--- a/third_party/abseil-cpp/absl/debugging/internal/stacktrace_config.h
++++ b/third_party/abseil-cpp/absl/debugging/internal/stacktrace_config.h
+@@ -52,6 +52,10 @@
+ 
+ #elif defined(__linux__) && !defined(__ANDROID__)
+ 
++#if defined(PDFIUM_USE_MUSL)
++#define ABSL_STACKTRACE_INL_HEADER \
++  "absl/debugging/internal/stacktrace_unimplemented-inl.inc"
++#else
+ #if defined(NO_FRAME_POINTER) && \
+     (defined(__i386__) || defined(__x86_64__) || defined(__aarch64__))
+ // Note: The libunwind-based implementation is not available to open-source
+@@ -84,6 +88,7 @@
+   "absl/debugging/internal/stacktrace_generic-inl.inc"
+ #endif  // __has_include(<execinfo.h>) && defined(ABSL_HAVE_THREAD_LOCAL)
+ #endif  // defined(__has_include)
++#endif  // defined(PDFIUM_USE_MUSL)
+ 
+ #endif  // defined(__linux__) && !defined(__ANDROID__)
+ 

@@ -25,9 +25,11 @@ Only Linux builds are published from this repo. For each release you will find:
 - **glibc** binaries (`pdfium-linux-<cpu>.tgz`)
 - **musl** binaries (`pdfium-linux-musl-<cpu>.tgz`)
 
-Current CPU targets: `arm`, `arm64`, `x64`, and `riscv64`. V8-enabled binaries are no longer produced.
+Current CPU targets: `arm`, `arm64`, `x64`, and `riscv64` (RV64GC). V8-enabled binaries are no longer produced.
 
 See the [Releases page](https://github.com/bblanchon/pdfium-binaries/releases) for the latest tarballs.
+
+Musl builds ship with Abseil stack tracing disabled (`PDFIUM_USE_MUSL=1`) because musl does not export `execinfo`/`backtrace`; we fall back to a stub so the library still links but without unwinder support.
 
 ### NuGet Packages
 

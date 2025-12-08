@@ -21,6 +21,7 @@ case "$TARGET_ENVIRONMENT" in
   musl)
     apply_patch "$PATCHES/musl/pdfium.patch"
     apply_patch "$PATCHES/musl/build.patch" build
+    apply_patch "$PATCHES/musl/absl_stacktrace.patch"
     mkdir -p "build/toolchain/linux/musl"
     cp "$PATCHES/musl/toolchain.gn" "build/toolchain/linux/musl/BUILD.gn"
     ;;
