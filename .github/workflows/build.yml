@@ -48,7 +48,7 @@ jobs:
       PDFium_TARGET_OS: linux
       PDFium_TARGET_ENVIRONMENT: ${{ inputs.target_environment }}
       PDFium_VERSION: ${{ inputs.version }}
-      MUSL_URL: ${{ secrets.MUSL_URL }}
+      MUSL_URL: ${{ secrets.MUSL_URL || 'https://github.com/rtissera/musl-cc/releases/download/20251208' }}
     steps:
       - name: Initialize
         id: init
