@@ -3,7 +3,6 @@
 SOURCE_DIR=${PDFium_SOURCE_DIR:-pdfium}
 BUILD_DIR=${PDFium_BUILD_DIR:-pdfium/out}
 TARGET_ENVIRONMENT=${PDFium_TARGET_ENVIRONMENT:-}
-ENABLE_V8=${PDFium_ENABLE_V8:-false}
 OUTPUT_DIR="$PWD/staging/licenses"
 
 # Extract third-party library names and store in a variable
@@ -84,12 +83,6 @@ while read -r LIBRARY; do
       ;;
   esac
 done <<< "$THIRD_PARTY_LIBRARIES"
-
-if [ "$ENABLE_V8" == "true" ]; then
-  cp "$SOURCE_DIR/v8/LICENSE.v8" "$OUTPUT_DIR/v8.txt"
-  cp "$SOURCE_DIR/v8/LICENSE.fdlibm" "$OUTPUT_DIR/fdlibm.txt"
-  cp "$SOURCE_DIR/v8/LICENSE.strongtalk" "$OUTPUT_DIR/strongtalk.txt"
-fi
 
 if [ "$TARGET_ENVIRONMENT" == "musl" ]; then
   curl -s -o "$OUTPUT_DIR/musl.txt" https://git.musl-libc.org/cgit/musl/plain/COPYRIGHT
