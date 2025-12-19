@@ -29,7 +29,6 @@ esac
 
 case "$OS" in
   linux)
-    apply_patch "$PATCHES/linux/fpdf_editpage.patch"
     ;;
 esac
 
